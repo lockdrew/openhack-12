@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trips
+spec:
+  selector:
+      matchLabels:
+        app: trips
+  replicas: 2
+  template:
+      metadata:
+        labels:
+            app: trips
+      spec:
+        containers:
+        - name: trips
+          image: registry6y44587.azurecr.io/hacker4/trips:1.0
+          ports:
+          - containerPort: 80
+          env:
+          - name: SQL_USER
+            value: "sqladmin6Y44587"
+          - name: SQL_PASSWORD
+            value: "6C4sw7Ol4"
+          - name: SQL_SERVER
+            value: "sqlserver6y44587.database.windows.net"
+          - name: SQL_DBNAME
+            value: "mydrivingDB"
+          - name: OPENAPI_DOCS_URI
+            value: "http://changeme"
+          - name: DEBUG_LOGGING
+            value: "false"
