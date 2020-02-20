@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripviewer
+spec:
+  selector:
+      matchLabels:
+        app: tripviewer
+  replicas: 2
+  template:
+      metadata:
+        labels:
+            app: tripviewer
+      spec:
+        containers:
+        - name: tripviewer
+          image: registry6y44587.azurecr.io/hacker3/tripviewer:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env: 
+            - name: TRIPS_API_ENDPOINT
+              value: "http://trips"
+            - name: USERPROFILE_API_ENDPOINT
+              value: "http://userprofile"
+
+

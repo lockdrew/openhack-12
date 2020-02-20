@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poi
+spec:
+  selector:
+      matchLabels:
+        app: poi
+  replicas: 2
+  template:
+      metadata:
+        labels:
+            app: poi
+      spec:
+        containers:
+        - name: poi
+          image: registry6y44587.azurecr.io/hacker2/poi:1.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env: 
+            - name: SQL_USER 
+              value: "sqladmin6Y44587"
+            - name: SQL_PASSWORD
+              value: "6C4sw7Ol4"
+            - name: SQL_SERVER
+              value: "sqlserver6y44587.database.windows.net"
+            - name: SQL_DBNAME
+              value: "mydrivingDB"
+            - name: WEB_PORT
+              value: "80"
+            - name: WEB_SERVER_BASE_URI
+              value: "http://0.0.0.0"
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Local"
+            - name: CONFIG_FILES_PATH
+              value: "/secrets"
+

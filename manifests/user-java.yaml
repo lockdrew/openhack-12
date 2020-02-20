@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-java
+spec:
+  selector:
+    app: user-java
+  ports:
+  - protocol: TCP
+    port: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-java
+spec:
+  selector:
+      matchLabels:
+        app: user-java
+  replicas: 2
+  template:
+      metadata:
+        labels:
+            app: user-java
+      spec:
+        containers:
+        - name: user-java
+          image: registry6y44587.azurecr.io/hacker3/user-java:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env: 
+            - name: PORT
+              value: "80"
+            - name: SQL_USER
+              value: "sqladmin6Y44587"
+            - name: SQL_PASSWORD
+              value: "6C4sw7Ol4"
+            - name: SQL_SERVER
+              value: "sqlserver6y44587.database.windows.net"
+            - name: SQL_DBNAME
+              value: "mydrivingDB"
