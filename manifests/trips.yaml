@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: trips
+  namespace: api
 spec:
   selector:
     app: trips
@@ -13,6 +14,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: trips
+  namespace: api
 spec:
   selector:
       matchLabels:
@@ -29,15 +31,43 @@ spec:
           ports:
           - containerPort: 80
           env:
+          # - name: SQL_USER
+          #   value: "sqladmin6Y44587"
           - name: SQL_USER
-            value: "sqladmin6Y44587"
+            valueFrom:
+              secretKeyRef:
+                name: sqlDb
+                key: sql--user
           - name: SQL_PASSWORD
-            value: "6C4sw7Ol4"
-          - name: SQL_SERVER
-            value: "sqlserver6y44587.database.windows.net"
-          - name: SQL_DBNAME
-            value: "mydrivingDB"
-          - name: OPENAPI_DOCS_URI
-            value: "http://changeme"
-          - name: DEBUG_LOGGING
-            value: "false"
+            valueFrom:
+              secretKeyRef:
+                name: sqlDb
+                key: sql--password
+        #   - name: SQL_PASSWORD      
+        #     value: "6C4sw7Ol4"
+        #   - name: SQL_SERVER
+        #     value: "sqlserver6y44587.database.windows.net"
+        #   - name: SQL_DBNAME
+        #     value: "mydrivingDB"
+        #   - name: OPENAPI_DOCS_URI
+        #     value: "http://changeme"
+        #   - name: DEBUG_LOGGING
+        #     value: "false"
+        #   volumeMounts:
+        #   - name: mongosecret
+        #     mountPath: /kvmnt
+        #     readOnly: true
+        # volumes:
+        # - name: mongosecret
+        #   flexVolume:
+        #     driver: "azure/kv"
+        #     secretRef:
+        #       name: kvcreds
+        #     options:
+        #       usepodidentity: "false"
+        #       keyvaultname: aksProd-kv
+        #       keyvaultobjectnames: mongo-password # Name of Key Vault secret
+        #       keyvaultobjecttypes: secret
+        #       resourcegroup: teamResources
+        #       subscriptionid: 75159368-bf37-41f2-86ee-725899d35f50
+        #       tenantid: a24b3d45-7d4d-43b6-8310-d4574595ca1e
