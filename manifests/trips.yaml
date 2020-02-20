@@ -30,44 +30,31 @@ spec:
           image: registry6y44587.azurecr.io/hacker4/trips:1.0
           ports:
           - containerPort: 80
+          volumeMounts:
+          - name: test
+            mountPath: /secrets
+            readOnly: true
           env:
-          # - name: SQL_USER
-          #   value: "sqladmin6Y44587"
-          - name: SQL_USER
-            valueFrom:
-              secretKeyRef:
-                name: sqlDb
-                key: sql--user
-          - name: SQL_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: sqlDb
-                key: sql--password
-        #   - name: SQL_PASSWORD      
-        #     value: "6C4sw7Ol4"
-        #   - name: SQL_SERVER
-        #     value: "sqlserver6y44587.database.windows.net"
-        #   - name: SQL_DBNAME
-        #     value: "mydrivingDB"
-        #   - name: OPENAPI_DOCS_URI
-        #     value: "http://changeme"
-        #   - name: DEBUG_LOGGING
-        #     value: "false"
-        #   volumeMounts:
-        #   - name: mongosecret
-        #     mountPath: /kvmnt
-        #     readOnly: true
-        # volumes:
-        # - name: mongosecret
-        #   flexVolume:
-        #     driver: "azure/kv"
-        #     secretRef:
-        #       name: kvcreds
-        #     options:
-        #       usepodidentity: "false"
-        #       keyvaultname: aksProd-kv
-        #       keyvaultobjectnames: mongo-password # Name of Key Vault secret
-        #       keyvaultobjecttypes: secret
-        #       resourcegroup: teamResources
-        #       subscriptionid: 75159368-bf37-41f2-86ee-725899d35f50
-        #       tenantid: a24b3d45-7d4d-43b6-8310-d4574595ca1e
+          - name: SQL_SERVER
+            value: "sqlserver6y44587.database.windows.net"
+          - name: SQL_DBNAME
+            value: "mydrivingDB"
+          - name: OPENAPI_DOCS_URI
+            value: "http://changeme"
+          - name: DEBUG_LOGGING
+            value: "false"
+        volumes:
+        - name: test
+          flexVolume:
+              driver: "azure/kv"
+              secretRef:
+                name: kvcreds
+              options:
+                usepodidentity: "false"
+                keyvaultname: aksProd-kv
+                keyvaultobjectnames: "sql--password;sql--user" # Name of Key Vault secret
+                keyvaultobjectaliases: "SQL_PASSWORD;SQL_USER"
+                keyvaultobjecttypes: "secret;secret"
+                resourcegroup: teamResources
+                subscriptionid: 75159368-bf37-41f2-86ee-725899d35f50
+                tenantid: a24b3d45-7d4d-43b6-8310-d4574595ca1e

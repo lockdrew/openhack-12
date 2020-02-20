@@ -1,11 +1,11 @@
-apiVersion: app/v1
+apiVersion: v1
 kind: Service
 metadata:
   name: poi
   namespace: api
 spec:
   selector:
-    app: tripviewer
+    app: poi
   ports:
   - protocol: TCP
     port: 80
@@ -31,21 +31,54 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 80
+          volumeMounts:
+          - name: test
+            mountPath: /secrets
+            readOnly: true
           env: 
-            - name: SQL_USER 
-              value: "sqladmin6Y44587"
-            - name: SQL_PASSWORD
-              value: "6C4sw7Ol4"
-            - name: SQL_SERVER
-              value: "sqlserver6y44587.database.windows.net"
-            - name: SQL_DBNAME
-              value: "mydrivingDB"
-            - name: WEB_PORT
-              value: "80"
-            - name: WEB_SERVER_BASE_URI
-              value: "http://0.0.0.0"
-            - name: ASPNETCORE_ENVIRONMENT
-              value: "Local"
-            - name: CONFIG_FILES_PATH
-              value: "/secrets"
+          - name: SQL_SERVER
+            value: "sqlserver6y44587.database.windows.net"
+          - name: SQL_DBNAME
+            value: "mydrivingDB"
+          - name: WEB_PORT
+            value: "80"
+          - name: WEB_SERVER_BASE_URI
+            value: "http://0.0.0.0"
+          - name: ASPNETCORE_ENVIRONMENT
+            value: "Local"
+          - name: CONFIG_FILES_PATH
+            value: "/secrets"
+        volumes:
+        - name: test
+          flexVolume:
+              driver: "azure/kv"
+              secretRef:
+                name: kvcreds
+              options:
+                usepodidentity: "false"
+                keyvaultname: aksProd-kv
+                keyvaultobjectnames: "sql--password;sql--user" # Name of Key Vault secret
+                keyvaultobjectaliases: "SQL_PASSWORD;SQL_USER"
+                keyvaultobjecttypes: "secret;secret"
+                resourcegroup: teamResources
+                subscriptionid: 75159368-bf37-41f2-86ee-725899d35f50
+                tenantid: a24b3d45-7d4d-43b6-8310-d4574595ca1e
+
+
+            # - name: SQL_USER 
+            #   value: "sqladmin6Y44587"
+            # - name: SQL_PASSWORD
+            #   value: "6C4sw7Ol4"
+            # - name: SQL_SERVER
+            #   value: "sqlserver6y44587.database.windows.net"
+            # - name: SQL_DBNAME
+            #   value: "mydrivingDB"
+            # - name: WEB_PORT
+            #   value: "80"
+            # - name: WEB_SERVER_BASE_URI
+            #   value: "http://0.0.0.0"
+            # - name: ASPNETCORE_ENVIRONMENT
+            #   value: "Local"
+            # - name: CONFIG_FILES_PATH
+            #   value: "/secrets"
 
