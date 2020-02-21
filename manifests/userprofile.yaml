@@ -25,10 +25,6 @@ spec:
                 mountPath: /secrets
                 readOnly: true
             env: 
-            - name: SQL_USER
-              value: sqladmin6Y44587
-            - name: SQL_PASSWORD
-              value: 6C4sw7Ol4
             - name: SQL_SERVER
               value: sqlserver6y44587.database.windows.net 
             - name: SQL_DBNAME
